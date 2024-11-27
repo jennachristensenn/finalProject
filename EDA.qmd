@@ -1,0 +1,12 @@
+---
+title: "EDA"
+format: html
+editor: visual
+---
+
+## Exploratory Data Analysis
+
+```{r}
+
+```
+
