@@ -65,6 +65,8 @@ na_counts <- diab_data |>
 na_counts
 ```
 
+## Summarizations
+
 Exploring summary stats of BMI (only numeric variable). Here the mean is very similar to the median indicating that the variable is not skewed, however these values are on the lower end compared to the max BMI value of 98. *Some speculation about the scale of these values...
 ```{r}
 diab_data |>
@@ -120,3 +122,5 @@ ggplot(diab_data, aes(x = bmi)) +
   geom_histogram(aes(color = genHlth)) 
 ```
 
+
+!!!!! include link to modeling page
