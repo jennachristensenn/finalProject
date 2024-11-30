@@ -24,7 +24,7 @@ The data that I will be working with is the Diabetes Health Indicators Dataset. 
 
 We examined the dataset in the EDA.qmd file. We want to make sure we have clean data so that our modeling can be as accurate as possible. Here we will explore two different models (classification tree and random forest) by tuning parameters to determine the best model for each type of model. Our goal with modeling is to create an accurate representation of the data, therefore, we will compare which type of model performs the best on the data, and use that to fit the test data. We want to utilize the best possible model so that we can make predictions about future outcomes and identify underlying patterns.
 
-```{r}
+```{r, warning = FLASE}
 library(tidyverse)
 library(tidymodels)
 library(tree)
@@ -62,7 +62,7 @@ diab_5_fold <- vfold_cv(diab_train, 5)
 
 ## Classification Tree Model
 
-A classification tree is a predictive model that attempts to split up predictor space into regions 
+A classification tree is a predictive model that attempts to split up predictor space into regions. 
 
 ```{r}
 rec <- recipe(diab_bin ~ ., data = diab_data) |>
@@ -87,7 +87,7 @@ tree_wfl <- workflow() |>
   add_model(tree_mod)
 ```
 
-Using CV to select the tuning parameters... **figure out if I need to use tune_grid() and grid_regular()
+Using CV to select the tuning parameters.
 ```{r}
 tree_fit <- tree_wfl |>
   tune_grid(resamples = diab_5_fold,
@@ -99,7 +99,21 @@ tree_fit |>
   arrange(mean)
 ```
 
+Selecting the best tuning parameter.
+```{r}
+tree_best <- select_best(tree_fit, metric = "mn_log_loss")
+tree_best
+```
+
+Fitting on the entire training set.
+```{r}
+tree_final_wfl <- tree_wfl |>
+  finalize_workflow(tree_best)
+```
+
 ## Random Forest Model
+
+A random forest model is an ensemble model that utilizes bootstrap samples. This model has potential to fit a model better than a basic classification tree because it takes the average of multiple trees that the model creates. In the context of classification, the model attempts to predict group membership with the most prevalent class in a region. Additionally, random forest models don't use every predictor at each step, and instead explores the combinations of random subsets of predictors to determine the best fit. 
 
 Defining the model and engine.
 ```{r}
@@ -115,19 +129,43 @@ rf_wfl <- workflow() |>
   add_model(rf_mod)
 ```
 
-Fitting to CV folds.
+Fitting to CV folds and examining metrics.
 ```{r}
 rf_fit <- rf_wfl |>
   tune_grid(resamples = diab_5_fold,
             grid = 5,
             metrics = metric_set(mn_log_loss))
-```
 
-Examining the metrics.
-```{r}
 rf_fit |>
   collect_metrics() |>
   filter(.metric == "mn_log_loss") |>
   arrange(mean)
+```
+
+Selecting the best tuning parameter
+```{r}
+rf_best <- select_best(rf_fit, metric = "mn_log_loss")
+rf_best
+```
+
+Fitting on the entire training set.
+```{r}
+rf_final_wfl <- rf_wfl |>
+  finalize_workflow(rf_best)
+```
+
+## Final Model Selection
+
+Examining how the final fitted models perform on the test set. 
+```{r}
+tree_final_fit <- tree_final_wfl |>
+  last_fit(diab_split, metrics = metric_set(mn_log_loss))
+
+tree_final_fit |> collect_metrics()
+
+rf_final_fit <- rf_final_wfl |>
+  last_fit(diab_split, metrics = metric_set(mn_log_loss))
+
+rf_final_fit |> collect_metrics()
 ```
 
