@@ -8,8 +8,6 @@ editor: visual
 
 The data that I will be working with is the Diabetes Health Indicators Dataset. This is a cleaned dataset of 253,680 responses to the CDC's Behavioral Risk Factor Surveillance System (BRFSS), a system of health-related telephone surveys. The data includes the response variable 'Diabetes_binary' indicating that a respondent either has diabetes or prediabetes [1], or does not have diabetes [0]. Twenty-one other variables are available that include both qualitative and quantitative variables. This data is commonly used to answer questions such as "which variables are accurate predictors of whether an individual has diabetes." In addition to the response variable 'Diabetes_binary' I will be using the following predictor variables for my analysis:
 
-- BMI: Body Mass Index (Numeric)
-
 - Smoker: Have you smoked at least 100 cigarettes in your entire life [0 = no, 1 = yes]
 
 - GenHlth: Would you say your general health is [1 = excellent, 2 = very good, 3 = good, 4 = fair, 5 = poor]
@@ -49,8 +47,7 @@ diab_data <- diab_data |>
                       labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")),
          income = factor(Income, levels = c(1, 2, 3, 4, 5, 6, 7, 8),
                          labels = c("<10", "10-15", "15-20", "20-25", "25-35", "35-50", "50-75", "75+"))) |>
-  select(diab_bin, BMI, smoker, genHlth, sex, age, income) |>
-  rename("bmi" = "BMI")
+  select(diab_bin, smoker, genHlth, sex, age, income) 
 diab_data
 ```
 
@@ -66,19 +63,6 @@ na_counts
 ```
 
 ## Summarizations
-
-Exploring summary stats of BMI (only numeric variable). Here the mean is very similar to the median indicating that the variable is not skewed, however these values are on the lower end compared to the max BMI value of 98. *Some speculation about the scale of these values...
-```{r}
-diab_data |>
-  summarize(across('bmi',
-                   .fns = c("mean" = mean,
-                            "median" = median,
-                            "sd" = sd,
-                            "IQR" = IQR,
-                            "min" = min,
-                            "max" = max),
-                   .names = "{.col}_{.fn}"))
-```
 
 ** Might want to split up
 Looking into contingency tables to get counts of different groupings of variables. Looking through these values we notice some interesting trends relating the response variable to general health and age. The gap between diabetes and no diabetes numbers gets smaller as health score declines. With the age variable we notice increasing numbers of responses with diabetes as age increases. 
@@ -114,12 +98,6 @@ Similarly, here we see the breakdown of income between smokers and non smokers t
 ggplot(diab_data, aes(x = diab_bin)) +
   geom_bar(aes(color = income)) +
   facet_wrap(~smoker)
-```
-
-Here we see the majority of BMI values fall between 10-50.
-```{r}
-ggplot(diab_data, aes(x = bmi)) +
-  geom_histogram(aes(color = genHlth)) 
 ```
 
 
