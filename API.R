@@ -35,4 +35,3 @@ conf_matrix <- conf_mat(diab_data |>
          estimate)
 conf_matrix
 
-#add so that we cna test
