@@ -15,7 +15,7 @@ diab_data <- diab_data |>
          genHlth = factor(GenHlth, levels  = c(1, 2, 3, 4, 5), 
                           labels = c("excellent", "very good", "good", "fair", "poor")),
          sex = factor(Sex, levels = c(0, 1), 
-                      labels = c("female", "Male")),
+                      labels = c("female", "male")),
          age = factor(Age, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), 
                       labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")),
          income = factor(Income, levels = c(1, 2, 3, 4, 5, 6, 7, 8),
@@ -23,9 +23,23 @@ diab_data <- diab_data |>
   select(diab_bin, smoker, genHlth, sex, age, income) 
 diab_data
 
+# Defining the recipe
+rec <- recipe(diab_bin ~ ., data = diab_data) |>
+  step_dummy(smoker, genHlth, sex, age, income)
+rec
+
+# Defining the model
+rf_mod <- rand_forest(mtry = 6) |>
+  set_engine("ranger", importance = "impurity") |>
+  set_mode("classification")
+
+# Creating the workflow
+rf_wfl <- workflow() |>
+  add_recipe(rec) |>
+  add_model(rf_mod)
+
 # Fitting best model to the entire dataset
 best_model <- rf_wfl |>
-  finalize_workflow(rf_best) |>
   fit(diab_data)
 
 
@@ -33,18 +47,39 @@ best_model <- rf_wfl |>
 
 # 1 - pred endpoint
 
-#* @param num1 first parameter
-#* @param num2 second parameter
-#* @param num3 third
-#* @param num4 fourth
-#* @param num5 fifth maybe more to come
+#* @param smoker (yes, no)
+#* @param genHlth (excellent, very good, good, fair, poor)
+#* @param sex (female, male)
+#* @param age (x18.24, x25.29, x30.34, x35.39, x40.44, x45.49, x50.54, x55.59, x60.64, x65.69, x70.74, x75.79, x80.0)
+#* @param income (x10, x10.15, x15.20, x20.25, x25.35, x35.50, x50.75, x75.0)
 #* @get /class
-function(predictors = c("")) {
-  #needs work!!!
+function(smoker, genHlth, sex, age, income) {
+  defaults <- diab_data|>
+    summarise(
+      smoker = names(which.max(table(smoker))),
+      genHlth = names(which.max(table(genHlth))),
+      sex = names(which.max(table(sex))),
+      age = names(which.max(table(age))),
+      income = names(which.max(table(income)))) |>
+    as.list()
+  
+  inputs <- list(
+    smoker = ifelse(is.null(smoker), defaults$smoker, smoker),
+    genHlth = ifelse(is.null(genHlth), defaults$genHlth, genHlth),
+    sex = ifelse(is.null(sex), defaults$sex, sex),
+    age = ifelse(is.null(age), defaults$age, age),
+    income = ifelse(is.null(income), defaults$income, income))
+  
+  input_tib <- as_tibble(inputs)
+  pred <- predict(best_model, new_data = input_data)
+  
+  list(
+    input = inputs,
+    prediction = pred$pred_class)
 }
-# query with ... 
-# query with ... 
-# query with ... 
+# query with http://localhost:PORT/pred [defaults]
+# query with http://localhost:PORT/pred?smoker=yes&sex=Female
+# query with http://localhost:PORT/pred?smoker=no&genHlth=fair&sex=Male&age=x25.35&income=x75.0
 
 
 # 2 - info endpoint
@@ -54,7 +89,7 @@ function() {
   c("Jenna Christensen",
     "https://jennachristensenn.github.io/finalProject/")
 }
-# query with ... 
+# query with http://localhost:PORT/info
 
 
 # 3 - confusion endpoint
@@ -84,6 +119,4 @@ function() {
     labs(title = "Confusion Matrix", x = "Predicted", y = "True") 
   print(plot)
 }
-# query with ...
-
-# Adjusting this again 
+# query with http://localhost:PORT/confusion

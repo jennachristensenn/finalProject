@@ -42,7 +42,7 @@ diab_data <- diab_data |>
          genHlth = factor(GenHlth, levels  = c(1, 2, 3, 4, 5), 
                           labels = c("excellent", "very good", "good", "fair", "poor")),
          sex = factor(Sex, levels = c(0, 1), 
-                      labels = c("female", "Male")),
+                      labels = c("female", "male")),
          age = factor(Age, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), 
                       labels = c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")),
          income = factor(Income, levels = c(1, 2, 3, 4, 5, 6, 7, 8),
@@ -101,4 +101,4 @@ ggplot(diab_data, aes(x = diab_bin)) +
 ```
 
 
-!!!!! include link to modeling page
+[Click here for the modeling page](Modeling.html) 
