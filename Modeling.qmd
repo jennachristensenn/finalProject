@@ -115,7 +115,7 @@ A random forest model is an ensemble model that utilizes bootstrap samples. This
 Defining the model and engine.
 ```{r}
 rf_mod <- rand_forest(mtry = tune()) |>
-  set_engine("ranger") |>
+  set_engine("ranger", importance = "impurity") |>
   set_mode("classification")
 ```
 
@@ -167,3 +167,19 @@ rf_final_fit |> collect_metrics()
 ```
 
 The overall best fit comes from the Random Forest model as the log loss metric is lower (0.377 for CT and 0.344 for RF). We will be using this model to fit to the entire dataset. 
+
+
+Examining Variable importance. 
+```{r}
+rf_final_model <- extract_fit_engine(rf_final_fit)
+tibble(term = names(rf_final_model$variable.importance),
+       value = rf_final_model$variable.importance) |>
+  arrange(value)|>
+  mutate(term = factor(term, levels = term)) |>
+  ggplot(aes(x = term, y = value)) +
+  geom_bar(stat = "identity") +
+  coord_flip()
+  
+```
+
+

@@ -137,7 +137,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>The data that I will be working with is the Diabetes Health Indicators Dataset. This is a cleaned dataset of 253,680 responses to the CDC’s Behavioral Risk Factor Surveillance System (BRFSS), a system of health-related telephone surveys. The data includes the response variable ‘Diabetes_binary’ indicating that a respondent either has diabetes or prediabetes [1], or does not have diabetes [0]. Twenty-one other variables are available that include both qualitative and quantitative variables. This data is commonly used to answer questions such as “which variables are accurate predictors of whether an individual has diabetes.” In addition to the response variable ‘Diabetes_binary’ I will be using the following predictor variables for my analysis:</p>
 <ul>
-<li><p>BMI: Body Mass Index (Numeric)</p></li>
 <li><p>Smoker: Have you smoked at least 100 cigarettes in your entire life [0 = no, 1 = yes]</p></li>
 <li><p>GenHlth: Would you say your general health is [1 = excellent, 2 = very good, 3 = good, 4 = fair, 5 = poor]</p></li>
 <li><p>Sex: Gender [0 = female, 1 = male]</p></li>
@@ -240,23 +239,22 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"18-24"</span>, <span class="st">"25-29"</span>, <span class="st">"30-34"</span>, <span class="st">"35-39"</span>, <span class="st">"40-44"</span>, <span class="st">"45-49"</span>, <span class="st">"50-54"</span>, <span class="st">"55-59"</span>, <span class="st">"60-64"</span>, <span class="st">"65-69"</span>, <span class="st">"70-74"</span>, <span class="st">"75-79"</span>, <span class="st">"80+"</span>)),</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">income =</span> <span class="fu">factor</span>(Income, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>),</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"&lt;10"</span>, <span class="st">"10-15"</span>, <span class="st">"15-20"</span>, <span class="st">"20-25"</span>, <span class="st">"25-35"</span>, <span class="st">"35-50"</span>, <span class="st">"50-75"</span>, <span class="st">"75+"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(diab_bin, BMI, smoker, genHlth, sex, age, income) <span class="sc">|&gt;</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"bmi"</span> <span class="ot">=</span> <span class="st">"BMI"</span>)</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>diab_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(diab_bin, smoker, genHlth, sex, age, income) </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>diab_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 253,680 × 7
-   diab_bin      bmi smoker genHlth   sex    age   income
-   &lt;fct&gt;       &lt;dbl&gt; &lt;fct&gt;  &lt;fct&gt;     &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; 
- 1 no diabetes    40 yes    poor      female 60-64 15-20 
- 2 no diabetes    25 yes    good      female 50-54 &lt;10   
- 3 no diabetes    28 no     poor      female 60-64 75+   
- 4 no diabetes    27 no     very good female 70-74 35-50 
- 5 no diabetes    24 no     very good female 70-74 20-25 
- 6 no diabetes    25 yes    very good Male   65-69 75+   
- 7 no diabetes    30 yes    good      female 60-64 50-75 
- 8 no diabetes    25 yes    good      female 70-74 20-25 
- 9 diabetes       30 yes    poor      female 60-64 &lt;10   
-10 no diabetes    24 no     very good Male   55-59 15-20 
+<pre><code># A tibble: 253,680 × 6
+   diab_bin    smoker genHlth   sex    age   income
+   &lt;fct&gt;       &lt;fct&gt;  &lt;fct&gt;     &lt;fct&gt;  &lt;fct&gt; &lt;fct&gt; 
+ 1 no diabetes yes    poor      female 60-64 15-20 
+ 2 no diabetes yes    good      female 50-54 &lt;10   
+ 3 no diabetes no     poor      female 60-64 75+   
+ 4 no diabetes no     very good female 70-74 35-50 
+ 5 no diabetes no     very good female 70-74 20-25 
+ 6 no diabetes yes    very good Male   65-69 75+   
+ 7 no diabetes yes    good      female 60-64 50-75 
+ 8 no diabetes yes    good      female 70-74 20-25 
+ 9 diabetes    yes    poor      female 60-64 &lt;10   
+10 no diabetes no     very good Male   55-59 15-20 
 # ℹ 253,670 more rows</code></pre>
 </div>
 </div>
@@ -270,68 +268,50 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>na_counts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 7
-  diab_bin   bmi smoker genHlth   sex   age income
-     &lt;int&gt; &lt;int&gt;  &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;
-1        0     0      0       0     0     0      0</code></pre>
+<pre><code># A tibble: 1 × 6
+  diab_bin smoker genHlth   sex   age income
+     &lt;int&gt;  &lt;int&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt;
+1        0      0       0     0     0      0</code></pre>
 </div>
 </div>
 </section>
 <section id="summarizations" class="level2">
 <h2 class="anchored" data-anchor-id="summarizations">Summarizations</h2>
-<p>Exploring summary stats of BMI (only numeric variable). Here the mean is very similar to the median indicating that the variable is not skewed, however these values are on the lower end compared to the max BMI value of 98. *Some speculation about the scale of these values…</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>diab_data <span class="sc">|&gt;</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="st">'bmi'</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.fns =</span> <span class="fu">c</span>(<span class="st">"mean"</span> <span class="ot">=</span> mean,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"median"</span> <span class="ot">=</span> median,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"sd"</span> <span class="ot">=</span> sd,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"IQR"</span> <span class="ot">=</span> IQR,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"min"</span> <span class="ot">=</span> min,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"max"</span> <span class="ot">=</span> max),</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_{.fn}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 6
-  bmi_mean bmi_median bmi_sd bmi_IQR bmi_min bmi_max
-     &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-1     28.4         27   6.61       7      12      98</code></pre>
-</div>
-</div>
 <p>** Might want to split up Looking into contingency tables to get counts of different groupings of variables. Looking through these values we notice some interesting trends relating the response variable to general health and age. The gap between diabetes and no diabetes numbers gets smaller as health score declines. With the age variable we notice increasing numbers of responses with diabetes as age increases.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>diab_ct <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>diab_ct</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>diab_ct <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>diab_ct</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 no diabetes    diabetes 
      218334       35346 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diab_smoker <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>smoker)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>diab_smoker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>diab_smoker <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>smoker)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>diab_smoker</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             
                   no    yes
   no diabetes 124228  94106
   diabetes     17029  18317</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>diab_hlth <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>genHlth)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>diab_hlth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>diab_hlth <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>genHlth)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>diab_hlth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             
               excellent very good  good  fair  poor
   no diabetes     44159     82703 62189 21780  7503
   diabetes         1140      6381 13457  9790  4578</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>diab_sex <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>sex)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>diab_sex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>diab_sex <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>sex)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>diab_sex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             
               female   Male
   no diabetes 123563  94771
   diabetes     18411  16935</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>diab_age <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>age)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>diab_age</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>diab_age <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>age)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>diab_age</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             
               18-24 25-29 30-34 35-39 40-44 45-49 50-54 55-59 60-64 65-69 70-74
@@ -342,8 +322,8 @@ no diabetes    diabetes
   no diabetes 12577 14154
   diabetes     3403  3209</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>diab_inc <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>income)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>diab_inc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>diab_inc <span class="ot">&lt;-</span> <span class="fu">table</span>(diab_data<span class="sc">$</span>diab_bin, diab_data<span class="sc">$</span>income)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>diab_inc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             
                 &lt;10 10-15 15-20 20-25 25-35 35-50 50-75   75+
@@ -353,41 +333,26 @@ no diabetes    diabetes
 </div>
 <p>In this plot we see the number of responses that have diabetes or not grouped by their general health classification split between males and females. We see that the groups withing the has diabetes category appear similar between males and females</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diab_data, <span class="fu">aes</span>(<span class="at">x =</span> diab_bin)) <span class="sc">+</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> genHlth)) <span class="sc">+</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diab_data, <span class="fu">aes</span>(<span class="at">x =</span> diab_bin)) <span class="sc">+</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> genHlth)) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EDA_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Similarly, here we see the breakdown of income between smokers and non smokers to be relatively similar between people with and without diabetes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diab_data, <span class="fu">aes</span>(<span class="at">x =</span> diab_bin)) <span class="sc">+</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> income)) <span class="sc">+</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>smoker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diab_data, <span class="fu">aes</span>(<span class="at">x =</span> diab_bin)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> income)) <span class="sc">+</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>smoker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="EDA_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Here we see the majority of BMI values fall between 10-50.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diab_data, <span class="fu">aes</span>(<span class="at">x =</span> bmi)) <span class="sc">+</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">color =</span> genHlth)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="EDA_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="EDA_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

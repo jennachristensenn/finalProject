@@ -28,10 +28,62 @@ best_model <- rf_wfl |>
   finalize_workflow(rf_best) |>
   fit(diab_data)
 
-# Confusion matrix for the our best model on the entire dataset
-conf_matrix <- conf_mat(diab_data |>
-           mutate(estimate = best_model |> predict(diab_data)  |> pull()),
-         diab_bin,
-         estimate)
-conf_matrix
 
+## Creating the different endpoints
+
+# 1 - pred endpoint
+
+#* @param num1 first parameter
+#* @param num2 second parameter
+#* @param num3 third
+#* @param num4 fourth
+#* @param num5 fifth maybe more to come
+#* @get /class
+function(predictors = c("")) {
+  #needs work!!!
+}
+# query with ... 
+# query with ... 
+# query with ... 
+
+
+# 2 - info endpoint
+
+#* @get /info
+function() {
+  c("Jenna Christensen",
+    "https://jennachristensenn.github.io/finalProject/")
+}
+# query with ... 
+
+
+# 3 - confusion endpoint
+
+#* @serializer png
+#* @get /confusion
+function() {
+  conf_matrix <- conf_mat(diab_data |>
+                            mutate(estimate = best_model |> predict(diab_data)  |> pull()),
+                          diab_bin,
+                          estimate)
+  
+  conf_df <- as.data.frame(conf_matrix$table)
+  conf_df <- conf_df |>
+    mutate(Label = case_when(
+      Prediction == "no diabetes" & Truth == "no diabetes" ~ "True Negative",
+      Prediction == "diabetes" & Truth == "diabetes" ~ "True Positive",
+      Prediction == "diabetes" & Truth == "no diabetes" ~ "False Positive",
+      Prediction == "no diabetes" & Truth == "diabetes" ~ "False Negative"
+    ))
+  conf_df <- conf_df |>
+    mutate(Annotation = paste0(Label, "\n", Freq))
+  
+  plot <- ggplot(conf_df, aes(x = Prediction, y = Truth, label = Annotation)) +
+    geom_tile(fill = "white", color = "black") +
+    geom_text(size = 5) + # add false positive and so forth 
+    labs(title = "Confusion Matrix", x = "Predicted", y = "True") 
+  print(plot)
+}
+# query with ...
+
+# Adjusting this again 
