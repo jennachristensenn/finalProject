@@ -60,7 +60,9 @@ diab_5_fold <- vfold_cv(diab_train, 5)
 Defining the recipe that will be used for both models. 
 ```{r}
 rec <- recipe(diab_bin ~ ., data = diab_data) |>
-  step_dummy(smoker, genHlth, sex, age, income)
+  step_dummy(smoker, genHlth, sex, age, income) |>
+  prep(training = diab_data) |>
+  bake(diab_data)
 rec
 ```
 

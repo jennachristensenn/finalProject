@@ -1,6 +1,6 @@
 ## API.R file 
 
-library(idyverse)
+library(tidyverse)
 library(tidymodels)
 library(plumber)
 
@@ -23,9 +23,9 @@ diab_data <- diab_data |>
   select(diab_bin, smoker, genHlth, sex, age, income) 
 diab_data
 
-# Defining the recipe
+# Defining the recipe -- look into prep and bake to see the extent of the x. variables 
 rec <- recipe(diab_bin ~ ., data = diab_data) |>
-  step_dummy(smoker, genHlth, sex, age, income)
+  step_dummy(smoker, genHlth, sex, age, income) 
 rec
 
 # Defining the model
@@ -47,35 +47,35 @@ best_model <- rf_wfl |>
 
 # 1 - pred endpoint
 
-#* @param smoker (yes, no)
-#* @param genHlth (excellent, very good, good, fair, poor)
-#* @param sex (female, male)
-#* @param age (x18.24, x25.29, x30.34, x35.39, x40.44, x45.49, x50.54, x55.59, x60.64, x65.69, x70.74, x75.79, x80.0)
-#* @param income (x10, x10.15, x15.20, x20.25, x25.35, x35.50, x50.75, x75.0)
+#* @param smoker 
+#* @param genHlth 
+#* @param sex 
+#* @param age 
+#* @param income
 #* @get /class
-function(smoker, genHlth, sex, age, income) {
-  defaults <- diab_data|>
-    summarise(
-      smoker = names(which.max(table(smoker))),
-      genHlth = names(which.max(table(genHlth))),
-      sex = names(which.max(table(sex))),
-      age = names(which.max(table(age))),
-      income = names(which.max(table(income)))) |>
-    as.list()
+function(smoker = "", genHlth = "", sex = "", age = "", income = "") {
   
-  inputs <- list(
-    smoker = ifelse(is.null(smoker), defaults$smoker, smoker),
-    genHlth = ifelse(is.null(genHlth), defaults$genHlth, genHlth),
-    sex = ifelse(is.null(sex), defaults$sex, sex),
-    age = ifelse(is.null(age), defaults$age, age),
-    income = ifelse(is.null(income), defaults$income, income))
+  def_smoker <- names(sort(table(diab_data$smoker), decreasing = TRUE))[1]
+  def_genHlth <- names(sort(table(diab_data$genHlth), decreasing = TRUE))[1]
+  def_sex <- names(sort(table(diab_data$sex), decreasing = TRUE))[1]
+  def_age <- names(sort(table(diab_data$age), decreasing = TRUE))[1]
+  def_income <- names(sort(table(diab_data$income), decreasing = TRUE))[1]
   
-  input_tib <- as_tibble(inputs)
-  pred <- predict(best_model, new_data = input_data)
+  if (smoker == "") smoker <- def_smoker
+  if (genHlth == "") genHlth <- def_genHlth
+  if (sex == "") sex <- def_sex
+  if (age == "") age <- def_age
+  if (income == "") income <- def_income
   
-  list(
-    input = inputs,
-    prediction = pred$pred_class)
+  new_data <- tibble(
+    smoker = smoker,
+    genHlth = genHlth,
+    sex = sex,
+    age = age,
+    income = income)
+  
+  prediction <- predict(best_model, new_data)
+  return(prediction$.pred_class)
 }
 # query with http://localhost:PORT/pred [defaults]
 # query with http://localhost:PORT/pred?smoker=yes&sex=Female
