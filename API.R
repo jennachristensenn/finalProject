@@ -23,7 +23,7 @@ diab_data <- diab_data |>
   select(diab_bin, smoker, genHlth, sex, age, income) 
 diab_data
 
-# Defining the recipe -- look into prep and bake to see the extent of the x. variables 
+# Defining the recipe 
 rec <- recipe(diab_bin ~ ., data = diab_data) |>
   step_dummy(smoker, genHlth, sex, age, income) 
 rec
@@ -43,15 +43,16 @@ best_model <- rf_wfl |>
   fit(diab_data)
 
 
+
 ## Creating the different endpoints
 
 # 1 - pred endpoint
 
-#* @param smoker 
-#* @param genHlth 
-#* @param sex 
-#* @param age 
-#* @param income
+#* @param smoker (no, yes)
+#* @param genHlth (excellent, very good, good, fair, poor)
+#* @param sex (female, male)
+#* @param age (18-24, 25-29, 30-34, 35-39, 40-44, 45-49, 50-54, 55-59, 60-64, 65-69, 70-74, 75-79, 80+)
+#* @param income (<10, 10-15, 15-20, 20-25, 25-35, 35-50, 50-75, 75+)
 #* @get /class
 function(smoker = "", genHlth = "", sex = "", age = "", income = "") {
   
@@ -78,8 +79,8 @@ function(smoker = "", genHlth = "", sex = "", age = "", income = "") {
   return(prediction$.pred_class)
 }
 # query with http://localhost:PORT/pred [defaults]
-# query with http://localhost:PORT/pred?smoker=yes&sex=Female
-# query with http://localhost:PORT/pred?smoker=no&genHlth=fair&sex=Male&age=x25.35&income=x75.0
+# query with http://localhost:PORT/pred?smoker=yes&sex=female
+# query with http://localhost:PORT/pred?smoker=no&genHlth=fair&sex=male&age=25-29&income=10-15
 
 
 # 2 - info endpoint
@@ -115,7 +116,7 @@ function() {
   
   plot <- ggplot(conf_df, aes(x = Prediction, y = Truth, label = Annotation)) +
     geom_tile(fill = "white", color = "black") +
-    geom_text(size = 5) + # add false positive and so forth 
+    geom_text(size = 5) + 
     labs(title = "Confusion Matrix", x = "Predicted", y = "True") 
   print(plot)
 }

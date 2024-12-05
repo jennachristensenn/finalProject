@@ -64,24 +64,38 @@ na_counts
 
 ## Summarizations
 
-** Might want to split up
-Looking into contingency tables to get counts of different groupings of variables. Looking through these values we notice some interesting trends relating the response variable to general health and age. The gap between diabetes and no diabetes numbers gets smaller as health score declines. With the age variable we notice increasing numbers of responses with diabetes as age increases. 
+Looking into contingency tables to get counts of different groupings of variables. Here we can see that there are significantly more participants without diabetes than with. 
 ```{r}
 diab_ct <- table(diab_data$diab_bin)
 diab_ct
+```
 
+The percentage of people that have diabetes is greater in the smoking group than non-smoking group.
+```{r}
 diab_smoker <- table(diab_data$diab_bin, diab_data$smoker)
 diab_smoker
+```
 
+Here it is interesting that the largest category of individuals that have diabetes report their general heath as "good".
+```{r}
 diab_hlth <- table(diab_data$diab_bin, diab_data$genHlth)
 diab_hlth
+```
 
+Females without diabetes outnumbers males without diabetes although the number of individuals with diabetes is relatively similar between males and females.
+```{r}
 diab_sex <- table(diab_data$diab_bin, diab_data$sex)
 diab_sex
+```
 
+We see that the majority of individuals interviewed were older than 35 and that the proportion of individuals with diabetes grows as you increase age classes. 
+```{r}
 diab_age <- table(diab_data$diab_bin, diab_data$age)
 diab_age
+```
 
+Among individuals with no diabetes, the highest proportion falls into the $75,000+ income level. 
+```{r}
 diab_inc <- table(diab_data$diab_bin, diab_data$income)
 diab_inc
 ```
